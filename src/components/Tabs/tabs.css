@@ -1,0 +1,20 @@
+.nav-tabs {
+  @apply flex;
+  background-color: var(--b-secondary);
+  border-radius: var(--spacing-8);
+  margin-block-start: var(--spacing-24);
+
+  /* & .tab {
+      background-color: var(--background-secondary);
+      border: 2px solid transparent;
+      color: var(--foreground-secondary);
+      font-size: var(--font-size-s);
+      padding-inline: var(--spacing-8);
+
+      &.active {
+        background-color: var(--db-quaternary);
+        border: 2px solid var(--background-secondary);
+        color: var(--accent-primary);
+      }
+    } */
+}

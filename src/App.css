@@ -1,0 +1,41 @@
+[data-theme="dark"] {
+  /* Accent */
+  --primary: var(--da-primary);
+  --primary-muted: var(--da-primary-muted);
+  --secondary: var(--da-secondary);
+  --tertiary: var(--da-tertiary);
+  --quaternary: var(--da-quaternary);
+
+  /* Background */
+  --b-primary: var(--db-primary);
+  --b-secondary: var(--db-secondary);
+  --b-tertiary: var(--db-tertiary);
+  --b-quaternary: var(--db-quaternary);
+
+  /* Foreground */
+  --f-primary: var(--df-primary);
+  --f-secondary: var(--df-secondary);
+}
+
+[data-theme="light"] {
+  /* Accent */
+  --primary: var(--la-primary);
+  --primary-muted: var(--la-primary-muted);
+  --secondary: var(--la-secondary);
+  --tertiary: var(--la-tertiary);
+  --quaternary: var(--la-quaternary);
+
+  /* Background */
+  --b-primary: var(--lb-primary);
+  --b-secondary: var(--lb-secondary);
+  --b-tertiary: var(--lb-tertiary);
+  --b-quaternary: var(--lb-quaternary);
+
+  /* Foreground */
+  --f-primary: var(--lf-primary);
+  --f-secondary: var(--lf-secondary);
+}
+
+.app-root {
+  padding: var(--spacing-12);
+}

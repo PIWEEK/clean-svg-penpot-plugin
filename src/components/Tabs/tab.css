@@ -1,0 +1,14 @@
+.tab {
+  @apply border-2 border-solid border-transparent flex-1 text-xs uppercase;
+  background-color: var(--b-secondary);
+  color: var(--f-secondary);
+  font-size: var(--font-size-s);
+  padding-inline: var(--spacing-8);
+  padding-block: var(--spacing-12);
+
+  &.active {
+    background-color: var(--b-quaternary);
+    border: 2px solid var(--b-secondary);
+    color: var(--accent-primary);
+  }
+}
