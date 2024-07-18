@@ -3,4 +3,9 @@ export interface ThemePluginEvent {
   content: string;
 }
 
-export type PluginMessageEvent = ThemePluginEvent;
+export interface SelectionChangeEvent {
+  type: "selection";
+  content: string;
+}
+
+export type PluginMessageEvent = ThemePluginEvent | SelectionChangeEvent;

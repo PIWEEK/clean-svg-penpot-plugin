@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import "./App.css";
 import { Tabs } from "./components/Tabs/tabs";
 import { PreviewTab } from "./views/preview/preview";
@@ -6,6 +6,8 @@ import { CodeTab } from "./views/code/code";
 import { SettingsTab } from "./views/settings/settings";
 import { TabContext } from "./context/tabContext";
 import { TabOptions } from "./components/Tabs/tab.model";
+import { optimize } from "svgo";
+import { PresetDefaultOverrides } from "svgo/plugins/plugins-types";
 
 function App() {
   // Initial state
@@ -16,25 +18,70 @@ function App() {
   const [theme, setTheme] = useState(initialTheme || null);
 
   const [tab, setTab] = useState<TabOptions>("preview");
-  const value = useMemo(() => ({ tab, setTab }), [tab]);
+  const tabContextData = useMemo(() => ({ tab, setTab }), [tab]);
+
+  const [svg, SetSVG] = useState<string>();
+
+  const [svgConfig, setSvgConfig] = useState<PresetDefaultOverrides>({});
 
   // Functions
-  window.addEventListener("message", (event) => {
-    if (event.data.type === "theme") {
-      setTheme(event.data.content);
-    }
-  });
+  const handleTheme = (event: MessageEvent) => setTheme(event.data.content);
+
+  // Event Handler
+  useEffect(() => {
+    const handleSelection = (event: MessageEvent) => {
+      const svg: string = event.data.content;
+      const optimizedSvgCode = optimize(svg, {
+        plugins: [
+          {
+            name: "preset-default",
+            params: {
+              overrides: svgConfig,
+            },
+          },
+        ],
+      });
+
+      SetSVG(optimizedSvgCode.data);
+    };
+
+    const handleMessage = (event: MessageEvent) => {
+      switch (event.data.type) {
+        case "theme":
+          handleTheme(event);
+          break;
+        case "selection":
+          0;
+          handleSelection(event);
+          break;
+        default:
+          console.log(`Unknown event type: ${event.type}`);
+      }
+    };
+    window.addEventListener("message", handleMessage);
+    return () => {
+      window.removeEventListener("message", handleMessage);
+    };
+  }, [svgConfig]);
 
   // Template
   return (
-    <TabContext.Provider value={value}>
-      <div data-theme={theme}>
+    <TabContext.Provider value={tabContextData}>
+      <div
+        className="flex flex-col h-screen"
+        data-theme={theme}
+      >
         <Tabs />
-        <div className="tabs-container">
-          {tab === "preview" && <PreviewTab />}
-          {tab === "code" && <CodeTab />}
+        <main className="tabs-container flex flex-1">
+          {tab === "preview" && <PreviewTab svg={svg} />}
+          {tab === "code" && theme && (
+            <CodeTab
+              svg={svg}
+              theme={theme}
+            />
+          )}
           {tab === "settings" && <SettingsTab />}
-        </div>
+        </main>
       </div>
     </TabContext.Provider>
   );

@@ -39,3 +39,8 @@
 .app-root {
   padding: var(--spacing-12);
 }
+
+.tabs-container {
+  max-height: calc(100% - 44px);
+  overflow: auto;
+}
