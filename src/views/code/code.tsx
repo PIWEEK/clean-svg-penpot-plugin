@@ -33,13 +33,53 @@ export const CodeTab = ({ svg, theme }: TabProps) => {
     }
   };
 
+  async function writeClipboardText() {
+    try {
+      if (svg) {
+        await navigator.clipboard.writeText(svg);
+      }
+    } catch (error: unknown) {
+      console.error("no se puede copiar");
+    }
+  }
+
   return (
     <div className="code-tab flex-1">
-      <div className="inner-tab flex p-4 rounded h-full">
+      <div className="inner-tab p-4 rounded h-full">
         {svg && (
-          <pre>
-            <code dangerouslySetInnerHTML={code()}></code>
-          </pre>
+          <div className="code-wrapper">
+            <pre>
+              <code dangerouslySetInnerHTML={code()}></code>
+            </pre>
+
+            <button
+              type="button"
+              className="code-export fixed top-24 right-4"
+              data-appearance="secondary"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                className="export icon w-4 h-4 cursor-pointer"
+                onClick={writeClipboardText}
+              >
+                <rect
+                  x="9"
+                  y="9"
+                  width="13"
+                  height="13"
+                  rx="2"
+                  ry="2"
+                ></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+            </button>
+          </div>
         )}
         <Suspense fallback={null}>
           {theme === "dark" ? <CodeTabDarkTheme /> : <CodeTabLightTheme />}

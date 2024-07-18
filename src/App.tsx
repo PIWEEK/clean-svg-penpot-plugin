@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import "./App.css";
 import { Tabs } from "./components/Tabs/tabs";
 import { PreviewTab } from "./views/preview/preview";
@@ -7,6 +7,7 @@ import { SettingsTab } from "./views/settings/settings";
 import { TabContext } from "./context/tabContext";
 import { TabOptions } from "./components/Tabs/tab.model";
 import { optimize, PluginConfig } from "svgo";
+import "@penpot/plugin-styles/styles.css";
 
 function App() {
   // Initial state
@@ -77,21 +78,22 @@ function App() {
     }
   }, [svg, svgConfig]);
 
-  const handleMessage = (event: MessageEvent) => {
-    switch (event.data.type) {
-      case "theme":
-        handleTheme(event);
-        break;
-      case "selection":
-        0;
-        SetSVG(event.data.content);
-        break;
-      default:
-        console.log(`Unknown event type: ${event.type}`);
-    }
-  };
-
-  window.addEventListener("message", handleMessage);
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      switch (event.data.type) {
+        case "theme":
+          handleTheme(event);
+          break;
+        case "selection":
+          console.log("aaaaaaaaaaa");
+          SetSVG(event.data.content);
+          break;
+        default:
+          console.log(`Unknown event type: ${event.type}`);
+      }
+    };
+    window.addEventListener("message", handleMessage);
+  }, []);
 
   const handleConfig = (target: HTMLInputElement, value: PluginConfig) => {
     if (target.checked) {

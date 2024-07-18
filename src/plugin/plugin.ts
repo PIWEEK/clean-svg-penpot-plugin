@@ -10,10 +10,15 @@ penpot.on("themechange", (theme) => {
   sendMessage({ type: "theme", content: theme });
 });
 
-penpot.on("selectionchange", () => {
+const generateMarkupfromSelectedShapes = () => {
+  console.log("generateMarkupfromSelectedShapes");
   const shapes: PenpotShape[] = penpot.getSelectedShapes();
   const markup: string = penpot.generateMarkup(shapes, { type: "svg" });
   sendMessage({ type: "selection", content: markup });
+};
+
+penpot.on("selectionchange", () => {
+  generateMarkupfromSelectedShapes();
 });
 
 function sendMessage(message: PluginMessageEvent) {

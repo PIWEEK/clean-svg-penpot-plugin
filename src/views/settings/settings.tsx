@@ -22,6 +22,7 @@ export const SettingsTab = ({ config, onToggleOption }: TabProps) => {
           <label
             htmlFor={option.value as string}
             className="body-small"
+            title={option.desc}
           >
             {option.name}
           </label>
