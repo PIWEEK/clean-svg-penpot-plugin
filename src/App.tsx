@@ -65,21 +65,6 @@ function App() {
 
   useEffect(() => {
     if (svg) {
-      optimize(svg, {
-        multipass: true,
-        js2svg: {
-          indent: 4, // number
-          pretty: true, // boolean
-        },
-        plugins: svgConfig,
-      });
-    }
-  }, [svg, svgConfig]);
-
-  // Event Handler
-  useEffect(() => {
-    const handleSelection = (event: MessageEvent) => {
-      const svg: string = event.data.content;
       const optimizedSvgCode = optimize(svg, {
         multipass: true,
         js2svg: {
@@ -88,35 +73,34 @@ function App() {
         },
         plugins: svgConfig,
       });
-
       SetSVG(optimizedSvgCode.data);
-    };
+    }
+  }, [svg, svgConfig]);
 
-    const handleMessage = (event: MessageEvent) => {
-      switch (event.data.type) {
-        case "theme":
-          handleTheme(event);
-          break;
-        case "selection":
-          0;
-          handleSelection(event);
-          break;
-        default:
-          console.log(`Unknown event type: ${event.type}`);
-      }
-    };
-    window.addEventListener("message", handleMessage);
-    return () => {
-      window.removeEventListener("message", handleMessage);
-    };
-  }, [svgConfig]);
+  const handleMessage = (event: MessageEvent) => {
+    switch (event.data.type) {
+      case "theme":
+        handleTheme(event);
+        break;
+      case "selection":
+        0;
+        SetSVG(event.data.content);
+        break;
+      default:
+        console.log(`Unknown event type: ${event.type}`);
+    }
+  };
+
+  window.addEventListener("message", handleMessage);
 
   const handleConfig = (target: HTMLInputElement, value: PluginConfig) => {
-    console.log(target, value);
     if (target.checked) {
-      setSvgConfig([...svgConfig, value]);
+      const configValues = [...svgConfig, value];
+      setSvgConfig(configValues);
     } else {
-      setSvgConfig(svgConfig.filter((config) => config !== value));
+      console.log("unchecked");
+      const configValues = svgConfig.filter((config) => config !== value);
+      setSvgConfig(configValues);
     }
   };
 
