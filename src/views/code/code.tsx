@@ -36,7 +36,11 @@ export const CodeTab = ({ svg, theme }: TabProps) => {
   return (
     <div className="code-tab flex-1">
       <div className="inner-tab flex p-4 rounded h-full">
-        {svg && <code dangerouslySetInnerHTML={code()}></code>}
+        {svg && (
+          <pre>
+            <code dangerouslySetInnerHTML={code()}></code>
+          </pre>
+        )}
         <Suspense fallback={null}>
           {theme === "dark" ? <CodeTabDarkTheme /> : <CodeTabLightTheme />}
         </Suspense>
