@@ -8,6 +8,7 @@ import { TabContext } from "./context/tabContext";
 import { TabOptions } from "./components/Tabs/tab.model";
 import { optimize, PluginConfig } from "svgo";
 import "@penpot/plugin-styles/styles.css";
+import { Shape } from "@penpot/plugin-types";
 
 function App() {
   // Initial state
@@ -57,6 +58,7 @@ function App() {
   const [tab, setTab] = useState<TabOptions>("preview");
   const tabContextData = useMemo(() => ({ tab, setTab }), [tab]);
 
+  const [shape, SetShape] = useState<Shape>();
   const [svg, SetSVG] = useState<string>();
 
   const [svgConfig, setSvgConfig] = useState<PluginConfig[]>(presetPlugins);
@@ -85,14 +87,17 @@ function App() {
           handleTheme(event);
           break;
         case "selection":
-          console.log("aaaaaaaaaaa");
-          SetSVG(event.data.content);
+          SetSVG(event.data.content.markup);
+          SetShape(event.data.content.shape);
           break;
         default:
           console.log(`Unknown event type: ${event.type}`);
       }
     };
     window.addEventListener("message", handleMessage);
+    return () => {
+      window.removeEventListener("message", handleMessage);
+    };
   }, []);
 
   const handleConfig = (target: HTMLInputElement, value: PluginConfig) => {
@@ -100,7 +105,6 @@ function App() {
       const configValues = [...svgConfig, value];
       setSvgConfig(configValues);
     } else {
-      console.log("unchecked");
       const configValues = svgConfig.filter((config) => config !== value);
       setSvgConfig(configValues);
     }
@@ -111,11 +115,15 @@ function App() {
     <TabContext.Provider value={tabContextData}>
       <div
         className="flex flex-col h-screen"
-        data-theme={theme}
-      >
+        data-theme={theme}>
         <Tabs />
         <main className="tabs-container flex flex-1">
-          {tab === "preview" && <PreviewTab svg={svg} />}
+          {tab === "preview" && (
+            <PreviewTab
+              svg={svg}
+              shape={shape}
+            />
+          )}
           {tab === "code" && theme && (
             <CodeTab
               svg={svg}
@@ -124,6 +132,7 @@ function App() {
           )}
           {tab === "settings" && (
             <SettingsTab
+              svg={svg}
               config={svgConfig}
               onToggleOption={(target, value) => handleConfig(target, value)}
             />

@@ -1,4 +1,3 @@
-import classNames from "classnames";
 import { TabOptions } from "./tab.model";
 import "./tab.css";
 import { useContext } from "react";
@@ -21,9 +20,7 @@ export const Tab = ({ tabName, active }: TabProps) => {
       onClick={() => handleTabClick()}
       type="button"
       role="tab"
-      className={classNames("tab", {
-        active: active,
-      })}
+      className={`tab ${active ? "active" : ""}`}
     >
       {tabName}
     </button>

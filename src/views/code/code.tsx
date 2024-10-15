@@ -46,7 +46,7 @@ export const CodeTab = ({ svg, theme }: TabProps) => {
   return (
     <div className="code-tab flex-1">
       <div className="inner-tab p-4 rounded h-full">
-        {svg && (
+        {svg ? (
           <div className="code-wrapper">
             <pre>
               <code dangerouslySetInnerHTML={code()}></code>
@@ -79,6 +79,12 @@ export const CodeTab = ({ svg, theme }: TabProps) => {
                 <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
               </svg>
             </button>
+          </div>
+        ) : (
+          <div className="code-wrapper">
+            <pre>
+              <code>Please select a shape from the viewport</code>
+            </pre>
           </div>
         )}
         <Suspense fallback={null}>
