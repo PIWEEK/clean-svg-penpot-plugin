@@ -1,14 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
 import "./App.css";
 import { Tabs } from "./components/Tabs/tabs";
-import { PreviewTab } from "./views/preview/preview";
+// import { PreviewTab } from "./views/preview/preview";
 import { CodeTab } from "./views/code/code";
 import { SettingsTab } from "./views/settings/settings";
 import { TabContext } from "./context/tabContext";
 import { TabOptions } from "./components/Tabs/tab.model";
 import { optimize, PluginConfig } from "svgo";
 import "@penpot/plugin-styles/styles.css";
-import { Shape } from "@penpot/plugin-types";
+// import { Shape } from "@penpot/plugin-types";
 
 function App() {
   // Initial state
@@ -55,10 +55,9 @@ function App() {
   // State management
   const [theme, setTheme] = useState(initialTheme || null);
 
-  const [tab, setTab] = useState<TabOptions>("preview");
+  const [tab, setTab] = useState<TabOptions>("code");
   const tabContextData = useMemo(() => ({ tab, setTab }), [tab]);
 
-  const [shape, SetShape] = useState<Shape>();
   const [svg, SetSVG] = useState<string>();
 
   const [svgConfig, setSvgConfig] = useState<PluginConfig[]>(presetPlugins);
@@ -87,8 +86,8 @@ function App() {
           handleTheme(event);
           break;
         case "selection":
-          SetSVG(event.data.content.markup);
-          SetShape(event.data.content.shape);
+          SetSVG(event.data.content.svg);
+          // SetShape(event.data.content.shape);
           break;
         default:
           console.log(`Unknown event type: ${event.type}`);
@@ -110,6 +109,10 @@ function App() {
     }
   };
 
+  const handlePreviewReady = () => {
+    parent.postMessage("interface-ready", "*");
+  };
+
   // Template
   return (
     <TabContext.Provider value={tabContextData}>
@@ -118,16 +121,20 @@ function App() {
         data-theme={theme}>
         <Tabs />
         <main className="tabs-container flex flex-1">
-          {tab === "preview" && (
+          {/* {tab === "preview" && (
             <PreviewTab
+              markup={markup}
               svg={svg}
+              styles={styles}
               shape={shape}
+              onReady={handlePreviewReady}
             />
-          )}
+          )} */}
           {tab === "code" && theme && (
             <CodeTab
               svg={svg}
               theme={theme}
+              onReady={handlePreviewReady}
             />
           )}
           {tab === "settings" && (

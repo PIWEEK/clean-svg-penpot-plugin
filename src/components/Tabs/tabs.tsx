@@ -9,20 +9,13 @@ export const Tabs = () => {
   return (
     <div
       role="tablist"
-      className="nav-tabs"
-    >
-      <Tab
-        tabName="preview"
-        active={tab === "preview"}
-      ></Tab>
+      className="nav-tabs">
       <Tab
         tabName="code"
-        active={tab === "code"}
-      ></Tab>
+        active={tab === "code"}></Tab>
       <Tab
         tabName="settings"
-        active={tab === "settings"}
-      ></Tab>
+        active={tab === "settings"}></Tab>
     </div>
   );
 };

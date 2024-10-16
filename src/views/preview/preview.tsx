@@ -1,12 +1,38 @@
+import { CSSProperties, useEffect } from "react";
 import "./preview.css";
 import { Shape } from "@penpot/plugin-types";
 
 type TabProps = {
   shape: Shape | undefined;
   svg?: string;
+  markup?: string;
+  styles?: string;
+  onReady: () => void;
 };
 
-export const PreviewTab = ({ shape, svg }: TabProps) => {
+export const PreviewTab = ({
+  shape,
+  svg,
+  markup,
+  styles,
+  onReady,
+}: TabProps) => {
+  useEffect(() => {
+    onReady();
+  }, []);
+
+  useEffect(() => {
+    if (styles) {
+      const style = document.createElement("style");
+      // style.type = "text/css";
+      style.appendChild(document.createTextNode(styles));
+      document.appendChild(style);
+      return () => {
+        document.removeChild(style);
+      };
+    }
+  }, [styles]);
+
   const downloadSvgFile = () => {
     if (svg) {
       const blob = new Blob([svg], { type: "image/svg+xml" });
@@ -31,7 +57,7 @@ export const PreviewTab = ({ shape, svg }: TabProps) => {
             <div
               className="preview-shape flex justify-center items-center flex-1"
               dangerouslySetInnerHTML={{
-                __html: svg as unknown as SVGElement,
+                __html: markup as unknown as HTMLElement,
               }}></div>
             <button
               type="button"

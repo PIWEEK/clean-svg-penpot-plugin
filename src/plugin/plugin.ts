@@ -1,16 +1,16 @@
 import { Shape } from "@penpot/plugin-types";
 import type { PluginMessageEvent } from "../models/message.model";
 
-const onLoadPlugin = (
-  name: string,
-  url: string,
-  options?: { width: number; height: number }
-) => {
-  penpot.ui.open(name, url, options);
-  generateMarkupfromSelectedShapes();
-};
+penpot.ui.open("CLEAN SVG", `?theme=${penpot.theme}`, {
+  width: 500,
+  height: 800,
+});
 
-// Removed incorrect penpot.ui.open call
+penpot.ui.onMessage((message) => {
+  if (message === "interface-ready") {
+    generateMarkupfromSelectedShapes();
+  }
+});
 
 penpot.on("themechange", (theme) => {
   sendMessage({ type: "theme", content: theme });
@@ -18,10 +18,8 @@ penpot.on("themechange", (theme) => {
 
 const generateMarkupfromSelectedShapes = () => {
   const shapes: Shape[] = penpot.selection;
-  console.log("shapes", shapes);
-  const shape: Shape = shapes[0];
-  const markup: string = penpot.generateMarkup([shape], { type: "svg" });
-  sendMessage({ type: "selection", content: { shape, markup } });
+  const svg: string = penpot.generateMarkup(shapes, { type: "svg" });
+  sendMessage({ type: "selection", content: { svg } });
 };
 
 penpot.on("selectionchange", () => {
@@ -31,8 +29,3 @@ penpot.on("selectionchange", () => {
 function sendMessage(message: PluginMessageEvent) {
   penpot.ui.sendMessage(message);
 }
-
-onLoadPlugin("CLEAN SVG", `?theme=${penpot.theme}`, {
-  width: 500,
-  height: 800,
-});
