@@ -1,10 +1,13 @@
+import { Shape } from "@penpot/plugin-types";
+
 export interface ThemePluginEvent {
   type: "theme";
   content: string;
 }
 
 export interface SelectionData {
-  svg: string;
+  svgs: string[];
+  shapes: Shape[];
 }
 
 export interface SelectionChangeEvent {

@@ -1,10 +1,7 @@
 {
-    "name": "Clean SVG",
-    "description": "Clean and optimize shapes in Penpot using SVGO",
-    "code": "/plugin.js",
-    "icon": "/logo-xs.svg",
-    "permissions": [
-        "content:read",
-        "content:write"
-    ]
+  "name": "Clean SVG",
+  "description": "Clean and optimize shapes in Penpot using SVGO",
+  "code": "/plugin.js",
+  "icon": "/logo-xs.svg",
+  "permissions": ["content:read", "content:write", "allow:downloads"]
 }

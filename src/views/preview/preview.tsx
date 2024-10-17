@@ -1,37 +1,17 @@
-import { CSSProperties, useEffect } from "react";
+import { useEffect } from "react";
 import "./preview.css";
 import { Shape } from "@penpot/plugin-types";
 
 type TabProps = {
-  shape: Shape | undefined;
+  shapes?: Shape[];
   svg?: string;
-  markup?: string;
-  styles?: string;
   onReady: () => void;
 };
 
-export const PreviewTab = ({
-  shape,
-  svg,
-  markup,
-  styles,
-  onReady,
-}: TabProps) => {
+export const PreviewTab = ({ shapes, svg, onReady }: TabProps) => {
   useEffect(() => {
     onReady();
   }, []);
-
-  useEffect(() => {
-    if (styles) {
-      const style = document.createElement("style");
-      // style.type = "text/css";
-      style.appendChild(document.createTextNode(styles));
-      document.appendChild(style);
-      return () => {
-        document.removeChild(style);
-      };
-    }
-  }, [styles]);
 
   const downloadSvgFile = () => {
     if (svg) {
@@ -39,7 +19,9 @@ export const PreviewTab = ({
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = shape ? `${shape.name}.svg` : "shape.svg";
+      a.download = shapes
+        ? `penpot-${shapes?.map((shape) => shape.name).join("-")}.svg`
+        : "shapes.svg";
       a.click();
 
       URL.revokeObjectURL(url);
@@ -48,16 +30,18 @@ export const PreviewTab = ({
 
   return (
     <div className="preview-tab flex-1 bg-white">
-      <div className="inner-tab flex  p-4 rounded h-full">
+      <div className="inner-tab flex flex-col p-4 rounded h-full">
         {svg ? (
           <>
             <div className="shape-name">
-              {shape ? shape.name : "No shape selected"}
+              {shapes
+                ? `penpot-${shapes?.map((shape) => shape.name).join("-")}.svg`
+                : "No shape selected"}
             </div>
             <div
               className="preview-shape flex justify-center items-center flex-1"
               dangerouslySetInnerHTML={{
-                __html: markup as unknown as HTMLElement,
+                __html: svg as unknown as HTMLElement,
               }}></div>
             <button
               type="button"

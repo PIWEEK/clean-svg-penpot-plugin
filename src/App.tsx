@@ -1,14 +1,15 @@
 import { useEffect, useMemo, useState } from "react";
 import "./App.css";
 import { Tabs } from "./components/Tabs/tabs";
-// import { PreviewTab } from "./views/preview/preview";
 import { CodeTab } from "./views/code/code";
 import { SettingsTab } from "./views/settings/settings";
 import { TabContext } from "./context/tabContext";
 import { TabOptions } from "./components/Tabs/tab.model";
 import { optimize, PluginConfig } from "svgo";
 import "@penpot/plugin-styles/styles.css";
-// import { Shape } from "@penpot/plugin-types";
+import { Shape } from "@penpot/plugin-types";
+import svgMerge from "./utils/svg-merge";
+import { PreviewTab } from "./views/preview/preview";
 
 function App() {
   // Initial state
@@ -58,7 +59,9 @@ function App() {
   const [tab, setTab] = useState<TabOptions>("code");
   const tabContextData = useMemo(() => ({ tab, setTab }), [tab]);
 
-  const [svg, SetSVG] = useState<string>();
+  const [shapes, SetShapes] = useState<Shape[]>();
+  const [svgs, SetSVGS] = useState<string[]>();
+  const [mergedSVG, SetMergedSVG] = useState<string>();
 
   const [svgConfig, setSvgConfig] = useState<PluginConfig[]>(presetPlugins);
 
@@ -66,18 +69,22 @@ function App() {
   const handleTheme = (event: MessageEvent) => setTheme(event.data.content);
 
   useEffect(() => {
-    if (svg) {
-      const optimizedSvgCode = optimize(svg, {
-        multipass: true,
-        js2svg: {
-          indent: 4, // number
-          pretty: true, // boolean
-        },
-        plugins: svgConfig,
+    if (svgs) {
+      const optimizedSvgs = svgs.map((svg) => {
+        const optimized = optimize(svg, {
+          multipass: true,
+          js2svg: {
+            indent: 4,
+            pretty: true,
+          },
+          plugins: svgConfig,
+        }).data;
+        return optimized;
       });
-      SetSVG(optimizedSvgCode.data);
+      const mergedSVGS = svgMerge(optimizedSvgs);
+      SetMergedSVG(mergedSVGS);
     }
-  }, [svg, svgConfig]);
+  }, [svgs, svgConfig]);
 
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
@@ -86,8 +93,8 @@ function App() {
           handleTheme(event);
           break;
         case "selection":
-          SetSVG(event.data.content.svg);
-          // SetShape(event.data.content.shape);
+          SetSVGS(event.data.content.svgs);
+          SetShapes(event.data.content.shapes);
           break;
         default:
           console.log(`Unknown event type: ${event.type}`);
@@ -121,25 +128,23 @@ function App() {
         data-theme={theme}>
         <Tabs />
         <main className="tabs-container flex flex-1">
-          {/* {tab === "preview" && (
+          {tab === "preview" && (
             <PreviewTab
-              markup={markup}
-              svg={svg}
-              styles={styles}
-              shape={shape}
+              shapes={shapes}
+              svg={mergedSVG}
               onReady={handlePreviewReady}
             />
-          )} */}
+          )}
           {tab === "code" && theme && (
             <CodeTab
-              svg={svg}
+              shapes={shapes}
+              svg={mergedSVG}
               theme={theme}
-              onReady={handlePreviewReady}
             />
           )}
           {tab === "settings" && (
             <SettingsTab
-              svg={svg}
+              svg={mergedSVG}
               config={svgConfig}
               onToggleOption={(target, value) => handleConfig(target, value)}
             />

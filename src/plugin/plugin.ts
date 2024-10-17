@@ -18,8 +18,10 @@ penpot.on("themechange", (theme) => {
 
 const generateMarkupfromSelectedShapes = () => {
   const shapes: Shape[] = penpot.selection;
-  const svg: string = penpot.generateMarkup(shapes, { type: "svg" });
-  sendMessage({ type: "selection", content: { svg } });
+  const svgs = shapes.map((shape) =>
+    penpot.generateMarkup([shape], { type: "svg" })
+  );
+  sendMessage({ type: "selection", content: { svgs, shapes } });
 };
 
 penpot.on("selectionchange", () => {

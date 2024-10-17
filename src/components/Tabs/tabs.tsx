@@ -11,6 +11,9 @@ export const Tabs = () => {
       role="tablist"
       className="nav-tabs">
       <Tab
+        tabName="preview"
+        active={tab === "preview"}></Tab>
+      <Tab
         tabName="code"
         active={tab === "code"}></Tab>
       <Tab
